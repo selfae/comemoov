@@ -1,0 +1,289 @@
+{% extends '::base.html.twig' %}
+
+{% trans_default_domain 'cocorico_listing' %}
+
+{% set location = listing_search_request.location %}
+
+{# SEO #}
+{% set seo_title = 'listing.search.result.title'|trans({'%listing_search_request%': location.address }) %}
+{% set seo_desc = '' %}
+{% set seo_meta_tile = 'listing.search.result.meta_title'|trans({'%listing_search_request%': location.address }, 'cocorico_meta') ~ " - " ~ cocorico_site_name %}
+{% set seo_meta_desc = 'listing.search.result.meta_desc'|trans({'%nb_results%': nb_results}, 'cocorico_meta') %}
+
+{% if seo_content|default(null) %}
+    {% set seo_title = seo_content.title %}
+    {% set seo_desc = seo_content.description %}
+    {% set seo_meta_tile = seo_content.metaTitle %}
+    {% set seo_meta_desc = seo_content.metaDescription %}
+{% endif %}
+
+{%- block meta_title -%}
+    {{ seo_meta_tile }}
+{%- endblock -%}
+
+{%- block meta_description -%}
+    {{ seo_meta_desc }}
+{%- endblock -%}
+{# END SEO #}
+
+{% block stylesheets %}
+    {{ parent() }}
+
+    <style>
+        #map-canvas {
+            width: {{ listing_search_map_w }}px;
+            height: {{ listing_search_map_h }}px;
+        }
+    </style>
+{% endblock %}
+
+
+{% block layout %}
+    {% embed '@CocoricoCore/Frontend/layout.html.twig' %}
+        {% trans_default_domain 'cocorico_listing' %}
+        {% block breadcrumbs %}
+            <!-- breadcrumbs -->
+            {{ render(controller('CocoricoBreadcrumbBundle:Breadcrumbs:index',{
+                request: app.request
+            })) }}
+        {% endblock %}
+
+        {% block search_form %}
+            {{ render(controller('CocoricoCoreBundle:Frontend/ListingSearch:searchResultForm')) }}
+        {% endblock %}
+
+        {% block main %}
+            <h1>
+                {{ seo_title }}
+                <small>
+                    {{ 'listing.search.result.results'|trans({'%nb_results%': nb_results}) }}
+                </small>
+
+                {% if bundleExist('CocoricoListingAlertBundle') %}
+                    <div class="listing-alert">
+                        <a href="{{ path('cocorico_listing_alert_new') }}" data-id="listing-alert"
+                           class="btn btn-default">
+                            {{ "listing.search.result.alert.link"|trans }}
+                        </a>
+                    </div>
+                    <div data-id="listing-alert-dialog"></div>
+                {% endif %}
+
+            </h1>
+            {#TO NOT DELETE#}
+            <div data-id="seo-desc">
+                {{ seo_desc|raw }}
+            </div>
+
+            <!-- two-columns -->
+            <div class="twocolumns row">
+                <!-- maparea -->
+                <div class="maparea col-xs-12 col-sm-4">
+                    <div class="map-holder">
+                        <div id="map-canvas"></div>
+                        {% include '@CocoricoCore/Frontend/ListingResult/_marker.html.twig' only %}
+                    </div>
+                </div>
+
+                <!-- postarea -->
+                <section class="listing-area col-xs-12 col-sm-8">
+                    <div class="listing-holder row">
+                        <!-- post -->
+                        {%- for listing in results -%}
+                            {% set listing = listing[0] %}
+                            {% set listing_translation = listing.translations[app.request.locale] %}
+                            {% set listing_location = listing.location %}
+                            {% set listing_user = listing.user %}
+                            {% set price = (listing.price / 100) | format_price(app.request.locale, 0) %}
+                            {% set listing_image = listing.images|length ? listing.images[0].name : ListingImageConstants.IMAGE_DEFAULT %}
+                            {% set user_image = listing_user.images|length ? listing_user.images[0].name : UserImageConstants.IMAGE_DEFAULT %}
+
+                            <article class="listing-post col-sm-6 col-xs-12">
+                                <a href="javascript:void(0)" id="favourite-{{ listing.id }}" class="favourit">
+                                    <i class="icon-heart"></i>
+                                    <span class="hidden">favourit</span>
+                                </a>
+                                <a href="{{ path('cocorico_listing_show', { 'slug': listing_translation.slug }) }}"
+                                   class="listing-box">
+                                    <div class="frame">
+
+                                        <div class="post-info">
+                                            <div class="img-holder">
+                                                <img src="{{ (ListingImageConstants.IMAGE_FOLDER ~  listing_image) | imagine_filter('listing_large') }}"
+                                                     alt="{{ listing_translation.title ~ " " ~ price }}"/>
+                                            </div>
+
+                                            <div class="box">
+                                                <div class="box-holder">
+                                                    <div class="head">
+                                                        <div class="time-price">
+                                                            <strong class="price">{{ price }}</strong>
+
+                                                            <p>
+                                                                {{ vatInclusionText(app.request.getLocale()) }}
+                                                                / {{ (0)|add_time_unit_text }}
+                                                            </p>
+                                                        </div>
+                                                    </div>
+                                                    <div class="foot">
+                                                        <div class="area">
+                                                            <!-- rating -->
+                                                            {% if listing.averageRating %}
+                                                                {{ listing.averageRating | cocorico_star_rating }}
+                                                            {% endif %}
+                                                            {% if  listing.certified %}
+                                                                <span class="certified">
+                                                                    <i class="icon-ok"></i>
+                                                                    {{ 'listing.search.result.certified'|trans }}
+                                                                </span>
+                                                            {% endif %}
+                                                        </div>
+                                                        <strong class="title">
+                                                            {% for listingListingCategory in listing.listingListingCategories %}
+                                                                {{ listingListingCategory.category.translations[app.request.locale].name }},
+                                                            {% endfor %}
+                                                        </strong>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div class="post-content">
+                                            <div class="alignleft">
+                                                <img src="{{ (UserImageConstants.IMAGE_FOLDER ~ user_image) | imagine_filter('user_xsmall') }}"
+                                                     alt="{{ listing_user.firstName }}"/>
+                                            </div>
+                                            <div class="textbox">
+                                                {% if bundleExist('CocoricoDeliveryBundle') %}
+                                                    {% include '@CocoricoDelivery/Frontend/Listing/_show_delivery.html.twig' with {
+                                                    'listing_delivery': listing.delivery
+                                                    } only %}
+                                                {% endif %}
+
+                                                <h2>{{ listing_translation.title }}</h2>
+
+                                                <p>{{ listing_location["city"] }} </p>
+
+                                                <!--Debug:
+                                                accuracy : {{ listing["accuracy"]|default(0) }}<br />
+                                                distance : {{ listing["distance"]|default(0) }}<br />
+                                                platformNotation : {{ listing.platformNotation|default(0) }}<br />
+                                                reallyAvailable : {{ listing["really_available"]|default(0) }}<br />
+                                                -->
+                                            </div>
+                                        </div>
+                                    </div>
+                                </a>
+                            </article>
+                        {%- endfor -%}
+                    </div>
+
+                    {% include '@CocoricoCore/Frontend/Common/_pagination.html.twig' with {
+                    'pagination': pagination
+                    } only %}
+
+                </section>
+            </div>
+
+            {#TO NOT DELETE#}
+            <div data-id="seo-desc-moved"></div>
+        {% endblock %}
+
+        {% block modal %}
+            {% include 'CocoricoCoreBundle:Frontend/Common:_modal.html.twig' only %}
+        {% endblock %}
+
+        {#{% block footer %}#}
+        {#{{ parent() }}#}
+        {#{% endblock %}#}
+
+    {% endembed %}
+
+{% endblock layout %}
+
+
+{% block javascripts %}
+    {{ parent() }}
+
+    {#Extend search area if not enough results#}
+    {% set extendSearch = nb_results < listingSearchMinResult %}
+
+    {#Geocoding #}
+    {% include '@CocoricoCore/Frontend/ListingResult/js/_geocoding_js.html.twig' with {
+    'map_elt': '#map-canvas',
+    'auto_complete_elt': '#location',
+    'default_lat': location.lat,
+    'default_lng': location.lng,
+    'extend_search': extendSearch
+    } only %}
+
+    {#Extend search call#}
+    {% set parentLocation, modalMessage = '', '' %}
+    {% if extendSearch %}
+        {% set parentLocation = location.getParentLocation() %}
+        {% set modalMessage = 'cocorico.search.extended.warning %location%'|trans({'%location%': parentLocation.address  }, 'cocorico') %}
+        <script>
+            $(function () {
+                var parentLocation = '{{ parentLocation|json_encode( constant('JSON_UNESCAPED_UNICODE') b-or constant('JSON_HEX_APOS') )|e('js') }}';
+                parentLocation = $.parseJSON(parentLocation);
+                extendSearchLocationFunc(parentLocation.address, parentLocation.type, '#modal', '{{ modalMessage }}');
+            });
+        </script>
+    {% endif %}
+
+    <script>
+        $(function () {
+            //Refresh map on load
+            refreshMapFunc('{{location.viewport }}', '{{ location.lat }}', '{{ location.lng }}');
+
+            //Set listings markers on load
+            var markers = '{{ markers|json_encode(constant('JSON_UNESCAPED_UNICODE') b-or constant('JSON_HEX_APOS') )|e('js') }}';
+            setMarkersFunc($.parseJSON(markers));
+
+            // Set default favourites in the listing
+            setDefaultFavourites();
+
+            //Select change submit the form
+//            $("select[id^='characteristics_'], select#sort_by").change(function (e) {
+//                $(this).closest('form').submit();
+//            });
+//            $(".ui-slider").on("slidestop", function (event, ui) {
+//                $(this).closest('form').submit();
+//            });
+
+            // Categories
+            initMultiSelect(
+                    '#categories',
+                    '{{ "multiselect.all_selected"|trans({}, "cocorico") }}',
+                    '{{ "multiselect.none_selected"|trans({}, "cocorico") }}',
+                    '{{ "multiselect.num_selected"|trans({}, "cocorico") }}'
+            );
+
+            $(".datepicker").datepicker({
+                dateFormat: "dd/mm/yy"
+            });
+
+            //Listing alert (See form_search.html.twig, common.js)
+            var $dialog = $("div[data-id=listing-alert-dialog]").initDialogForm(400);
+
+            $("a[data-id=listing-alert]").on('click', function (e) {
+                e.preventDefault();
+                $dialog.openDialog($(this).attr("href"), "");
+                return false;
+            });
+
+            //Move seo desc to bottom
+            $("[data-id=seo-desc]").appendTo("[data-id=seo-desc-moved]");
+        });
+    </script>
+{% endblock %}
+
+
+
+{% block markup_jsonld %}
+    {{ parent() }}
+
+    {% include '@CocoricoSeo/Frontend/ListingResult/_result_markup.jsonld.twig' ignore missing with {
+    'listings': results
+    } only %}
+{% endblock %}
