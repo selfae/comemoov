@@ -1,41 +1,86 @@
-# Cache and logs (Symfony2)
-/app/cache/*
-/app/logs/*
+app/DoctrineMigrations
+app/bootstrap.php.cache
+app/spool
+app/cache
 !app/cache/.gitkeep
-!app/logs/.gitkeep
-
-# Email spool folder
-/app/spool/*
-
-# Cache, session files and logs (Symfony3)
-/var/cache/*
-/var/logs/*
-/var/sessions/*
-!var/cache/.gitkeep
-!var/logs/.gitkeep
-!var/sessions/.gitkeep
-
-# Parameters
-/app/config/parameters.yml
-/app/config/parameters.ini
-
-# Managed by Composer
-/app/bootstrap.php.cache
-/var/bootstrap.php.cache
-/bin/*
-!bin/console
-!bin/symfony_requirements
-
-# Assets and user uploads
-/web/bundles/
-/web/uploads/
-
-# PHPUnit
+app/config/parameters.yml
+app/config/parameters_test.yml
+app/SymfonyRequirements.php
 /app/phpunit.xml
-/phpunit.xml
+app/logs
+!app/logs/.gitkeep
+!app/build/logs/.gitkeep
 
-# Build data
-/build/
+bin/chromedriver
+bin/chromedriver.exe
+bin/selenium-server.jar
+bin/doctrine.php.bat
+bin/doctrine.php
+bin/doctrine
+bin/doctrine.bat
+bin/security-checker
+bin/security-checker.bat
 
-# Backup entities generated with doctrine:generate:entities command
-**/Entity/*~
+composer.phar
+.idea/*
+
+vendor/
+
+#see .htacces.dist
+web/.htaccess
+web/bundles/
+web/css/compiled/*
+!web/css/vendor
+web/js/compiled/*
+!web/js/vendor
+
+web/test
+web/test/behat
+!web/test/behat/.gitkeep
+
+web/json/*
+web/json/currencies.json
+!web/json/.gitkeep
+
+web/uploads/listings/images/*
+!web/uploads/listings/images/default-listing.png
+web/uploads/users/images/*
+!web/uploads/users/images/default-user.png
+web/uploads/.tmb/*
+web/uploads/.quarantine/*
+
+web/media/cache/*
+web/images/Thumbs.db
+web/assets/*
+web/Thumbs.db
+web/sitemap.xml
+
+watch
+
+
+C_local.0
+C_local.ns
+*.php~
+
+behat.yml
+
+features/_datas/cocorico_test.db
+tmp/patch
+
+php
+
+/auth.json
+
+
+tmp/*
+tmp/*.*
+tmp/bu
+tmp/tmp.json
+
+#Mangopay
+#!tmp/mangopay/
+#!tmp/mangopay/.gitkeep
+#tmp/mangopay/MangoPaySdkStorage.tmp.php
+
+db/mysql/*
+db/mongodb/*
