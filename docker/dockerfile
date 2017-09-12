@@ -1,0 +1,62 @@
+# docker run --name caher_comemove -v /home/selfae/workspace/cocorico:/var/www/html/cocorico/:rw -v /home/selfae/workspace/cocorico/db/mysql/cocorico_dev/:/var/lib/mysql/cocorico_dev:rw -v /home/selfae/workspace/cocorico/db/mongodb/:/var/lib/mongodb:rw -p 8080:80 -p 443:443 -it caher_comemove
+
+
+FROM debian:jessie
+
+MAINTAINER Camille Hernoux <camille.hernoux@gmail.com>
+
+########################
+# Installation de base #
+########################
+
+RUN apt-get update && apt-get install -y vim htop less net-tools iftop
+
+COPY etc/bash.bashrc /etc/bash.bashrc
+COPY etc/vim/vimrc /etc/vim/vimrc
+
+########################
+# Installation apache2 #
+########################
+
+RUN apt-get install -y apache2 libapache2-mod-php5 curl
+
+
+COPY etc/apache2/sites-available/cocorico.conf /etc/apache2/sites-available/cocorico.conf
+COPY etc/apache2/sites-available/cocorico-ssl.conf /etc/apache2/sites-available/cocorico-ssl.conf
+
+RUN a2enmod headers
+RUN a2enmod rewrite
+RUN a2enmod ssl
+
+########################
+# Installation mongoDB #
+########################
+
+RUN apt-get install -y mongodb
+
+RUN apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv 0C49F3730359A14518585931BC711F9BA15703C6
+RUN echo "deb http://repo.mongodb.org/apt/debian jessie/mongodb-org/3.4 main" | tee /etc/apt/sources.list.d/mongodb-org-3.4.list
+RUN apt-get update && apt-get install -y mongodb-org
+
+#######################
+# Installation PHP5.6 #
+#######################
+
+RUN apt-get install -y php5 php-soap php-apc php5-apcu php5-curl php5-gd php5-imagick php5-intl php5-mongo php5-mysql php5-xdebug
+
+COPY etc/php5/cli/php.ini /etc/php5/cli/php.ini
+COPY etc/php5/apache2/php.ini /etc/php5/apache2/php.ini
+
+######################
+# Installation Mysql #
+######################
+
+#RUN debconf-set-selections <<< 'mysql-server mysql-server/root_password password root'
+#RUN debconf-set-selections <<< 'mysql-server mysql-server/root_password_again password root'
+RUN export DEBIAN_FRONTEND=noninteractive && apt-get install -q -y mysql-server
+
+################
+# Run services #
+################
+
+ENTRYPOINT service apache2 start && service mysql start && service mongodb start && bash
