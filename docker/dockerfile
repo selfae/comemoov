@@ -1,4 +1,4 @@
-# docker run --name caher_comemove -v /home/selfae/workspace/cocorico:/var/www/html/cocorico/:rw -v /home/selfae/workspace/cocorico/db/mysql/cocorico_dev/:/var/lib/mysql/cocorico_dev:rw -v /home/selfae/workspace/cocorico/db/mongodb/:/var/lib/mongodb:rw -p 8080:80 -p 443:443 -it caher_comemove
+# 	docker run --name caher_comemove -v /home/selfae/workspace/comemove:/var/www/html/cocorico/:rw -v /home/selfae/workspace/comemove/db/mysql/cocorico_dev/:/var/lib/mysql/cocorico_dev:rw -v /home/selfae/workspace/comemove/db/mongodb/:/var/lib/mongodb:rw -p 8080:80 -p 443:443 -it caher_comemove
 
 
 FROM debian:jessie
@@ -9,7 +9,7 @@ MAINTAINER Camille Hernoux <camille.hernoux@gmail.com>
 # Installation de base #
 ########################
 
-RUN apt-get update && apt-get install -y vim htop less net-tools iftop
+RUN apt-get update && apt-get install -y vim htop less net-tools iftop curl
 
 COPY etc/bash.bashrc /etc/bash.bashrc
 COPY etc/vim/vimrc /etc/vim/vimrc
@@ -18,15 +18,20 @@ COPY etc/vim/vimrc /etc/vim/vimrc
 # Installation apache2 #
 ########################
 
-RUN apt-get install -y apache2 libapache2-mod-php5 curl
+RUN apt-get install -y apache2 libapache2-mod-php5 ssl-cert
 
 
 COPY etc/apache2/sites-available/cocorico.conf /etc/apache2/sites-available/cocorico.conf
 COPY etc/apache2/sites-available/cocorico-ssl.conf /etc/apache2/sites-available/cocorico-ssl.conf
+COPY etc/ssl/private/localhost.pem /etc/ssl/private/localhost.pem
 
 RUN a2enmod headers
 RUN a2enmod rewrite
 RUN a2enmod ssl
+
+RUN a2dissite 000-default.conf
+RUN a2ensite cocorico.conf
+RUN a2ensite cocorico-ssl.conf
 
 ########################
 # Installation mongoDB #
@@ -59,4 +64,4 @@ RUN export DEBIAN_FRONTEND=noninteractive && apt-get install -q -y mysql-server
 # Run services #
 ################
 
-ENTRYPOINT service apache2 start && service mysql start && service mongodb start && bash
+ENTRYPOINT service apache2 start && chown -Rf mysql:mysql /var/lib/mysql && service mysql start && chown -Rf mongodb:mongodb /var/lib/mongodb && service mongodb start && bash

@@ -25,10 +25,10 @@ parameters:
     ### Cocorico environments dependant parameters (See CocoricoCoreBundle/Resources/config/parameters.yml) ###
 
     #Assets for emails
-    cocorico.assets_base_urls: https://cocorico.dev
+    cocorico.assets_base_urls: https://selfae.freeboxos.fr
 
     #Request Context url for email send from command
-    router.request_context.host: cocorico.dev
+    router.request_context.host: selfae.freeboxos.fr
     router.request_context.scheme: https
     router.request_context.base_url: ''
 
