@@ -1,9 +1,9 @@
 parameters:
     database_host:     127.0.0.1
     database_port:     ~
-    database_name:     cocorico_dev
-    database_user:     cocorico_dev
-    database_password: cocorico_dev
+    database_name:     comemoov
+    database_user:     root
+    database_password:
 
     #MongoDB
     mongodb_server: mongodb://localhost:27017
@@ -25,10 +25,10 @@ parameters:
     ### Cocorico environments dependant parameters (See CocoricoCoreBundle/Resources/config/parameters.yml) ###
 
     #Assets for emails
-    cocorico.assets_base_urls: https://selfae.freeboxos.fr
+    cocorico.assets_base_urls: https://127.0.0.1
 
     #Request Context url for email send from command
-    router.request_context.host: selfae.freeboxos.fr
+    router.request_context.host: 127.0.0.1
     router.request_context.scheme: https
     router.request_context.base_url: ''
 
