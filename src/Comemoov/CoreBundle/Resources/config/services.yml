@@ -1,0 +1,4 @@
+services:
+#    comemoov_core.example:
+#        class: Comemoov\CoreBundle\Example
+#        arguments: [@service_id, "plain_value", %parameter%]

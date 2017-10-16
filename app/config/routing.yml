@@ -1,3 +1,7 @@
+comemoov_core:
+    resource: "@ComemoovCoreBundle/Resources/config/routing.yml"
+    prefix:   /
+
 cocorico_core:
     resource: "@CocoricoCoreBundle/Resources/config/routing.yml"
 
