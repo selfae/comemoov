@@ -1,7 +1,7 @@
 services:
     #Entities manager
     cocorico.listing_search.manager:
-        class: Cocorico\CoreBundle\Model\Manager\ListingSearchManager
+        class: Comemoov\CoreBundle\Model\Manager\ListingSearchManager
         arguments:
             - "@doctrine.orm.entity_manager"
             - "@doctrine.odm.mongodb.document_manager"
