@@ -57,6 +57,7 @@ class AppKernel extends Kernel
             new Cocorico\ReviewBundle\CocoricoReviewBundle(),
             new Cocorico\ConfigBundle\CocoricoConfigBundle(),
             new Comemoov\CoreBundle\ComemoovCoreBundle(),
+            new Comemoov\UserBundle\ComemoovUserBundle(),
         );
 
         if (in_array($this->getEnvironment(), array('dev', 'test', 'staging'), true)) {

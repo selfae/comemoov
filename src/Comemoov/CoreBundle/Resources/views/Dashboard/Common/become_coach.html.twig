@@ -1,0 +1,14 @@
+{% extends '@CocoricoCore/Dashboard/layout.html.twig' %}
+
+{% trans_default_domain 'cocorico_booking' %}
+
+
+{% block nav_dashboard -%}
+    {% set nav_dashboard_current = 'bookings' %}
+    {{ parent() }}
+{%- endblock %}
+
+
+{% block main_dashboard %}
+    <h3>{{ message }}</h3>
+{% endblock %}

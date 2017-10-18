@@ -1,3 +1,7 @@
+comemoov_user:
+    resource: "@ComemoovUserBundle/Resources/config/routing.yml"
+    prefix:   /
+
 comemoov_core:
     resource: "@ComemoovCoreBundle/Resources/config/routing.yml"
     prefix:   /

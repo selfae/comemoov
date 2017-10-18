@@ -22,6 +22,7 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 
 class ListingSearchController extends CocoricoListingSearchController
 {
@@ -38,7 +39,7 @@ class ListingSearchController extends CocoricoListingSearchController
     {
         return $this->render(
             '@CocoricoCore/Frontend/ListingResult/result.html.twig',
-            $this->_getSearchResults($request, Listing::STATUS_NEW)
+            $this->_getSearchResults($request, Listing::STATUS_PUBLISHED)
         );
     }
 
@@ -47,6 +48,8 @@ class ListingSearchController extends CocoricoListingSearchController
      *
      * @Route("/dashboard/listing/search_result", name="comemoove_dashboard_listing_search_result")
      * @Method("GET")
+     *
+     * @Security("has_role('ROLE_COACH')")
      *
      * @param  Request $request
      * @return \Symfony\Component\HttpFoundation\Response
