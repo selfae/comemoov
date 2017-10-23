@@ -72,7 +72,7 @@ services:
 
     #Documents Manager
     cocorico.listing_availability.manager:
-        class: Cocorico\CoreBundle\Model\Manager\ListingAvailabilityManager
+        class: Comemoov\CoreBundle\Model\Manager\ListingAvailabilityManager
         arguments:
             - "@doctrine.odm.mongodb.document_manager"
             - "%cocorico.time_unit%"

@@ -1,0 +1,70 @@
+{% extends 'CocoricoCoreBundle:Dashboard:layout.html.twig' %}
+
+{% trans_default_domain 'cocorico_listing_search' %}
+
+{% block nav_dashboard -%}
+    {% set nav_dashboard_current = 'listing_search' %}
+    {{ parent() }}
+{%- endblock %}
+
+
+{% block stylesheets %}
+    {{ parent() }}
+
+    <style>
+        #map-canvas {
+            width: {{ listing_search_map_w }}px;
+            height: {{ listing_search_map_h }}px;
+        }
+    </style>
+{% endblock %}
+
+{% block main_dashboard -%}
+    <div>
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>id</th>
+                    <th>listingId</th>
+                    <th>day</th>
+                    <th>status</th>
+                    <th>price</th>
+                    <th>times</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for avaibility in avaibilities %}
+                    <tr>
+                        <td>{{ avaibility.id }}</td>
+                        <td>{{ avaibility.listingId }}</td>
+                        <td>{{ avaibility.day|date("d-m-Y H:i:s") }}</td>
+                        <td>{{ avaibility.status }}</td>
+                        <td>{{ avaibility.price }}</td>
+                        <td>
+                            <table class="table">
+                                <thead>
+                                    <tr>
+                                        <th>id</th>
+                                        <th>status</th>
+                                        <th>price</th>
+                                        <th>coachId</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for times in avaibility.getTimes() %}
+                                        <tr>
+                                            <td>{{ times.id }}</td>
+                                            <td>{{ times.status }}</td>
+                                            <td>{{ times.price }}</td>
+                                            <td>{{ times.coachId }}</td>
+                                        </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+{% endblock %}

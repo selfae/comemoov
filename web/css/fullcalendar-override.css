@@ -183,3 +183,19 @@ ul.no-list li {
 .fc-time-grid-event {
     border: #ccc dotted 1px;
 }
+
+/**
+ * Code spécifique à comemoov
+ * @TODO : basculer le code spécifique sur du less
+ */
+#calendar-container a.cal-coached-evt {
+    background-color: #a2c4c9;
+}
+
+.legend .cal-coached-evt {
+    background-color: #a2c4c9;
+}
+
+#calendar-container .fc-day-grid .fc-event-container a.fc-event:hover {
+    background-color: #8fdf82;
+}

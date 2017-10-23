@@ -1,0 +1,28 @@
+<div class="title">
+    <div class="dialog" style="display: none">
+        <div class="dialog-content">
+            <ul>
+                <li>id : {{ avaibility['id'] }}</li>
+                <li>start : {{ avaibility['start'] }}</li>
+                <li>end : {{ avaibility['end'] }}</li>
+                {%  if coach is not null %}
+                    <li>coach : {{ coach.getLastName }} {{ coach.getFirstName }}</li>
+                {% endif %}
+            </ul>
+            <button type="button" class="btn btn-primary">Reserver ce cour</button>
+            {% if coach is null %}
+                <button type="button" class="btn btn-warning add-coach">
+                    Annimer ce cour
+                    <input id="avaibility_id" type="hidden" value="{{ avaibility['id'] }}"\>
+                </button>
+            {% else %}
+                <button type="button" class="btn btn-danger remove-coach">
+                    Supprimer l'annimateur
+                    <input id="avaibility_id" type="hidden" value="{{ avaibility['id'] }}"\>
+                </button>
+            {% endif %}
+        </div>
+        <div class="dialog-tmp"></div>
+    </div>
+    <a class="price">{{ formated_price }}</a>
+</div>

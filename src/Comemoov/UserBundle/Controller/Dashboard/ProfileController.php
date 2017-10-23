@@ -47,7 +47,6 @@ class ProfileController extends CocoricoProfileController
     {
 
         $user = $this->getUser();
-        var_dump($user->getRoles());
         //@TODO : Faire proprement de système de message
         $message = "vous êtes déjà un Coach.";
         if ($user->hasRole('ROLE_COACH') === false) {

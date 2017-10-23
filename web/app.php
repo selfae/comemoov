@@ -6,6 +6,7 @@ use Symfony\Component\HttpFoundation\Request;
 /**
  * @var Composer\Autoload\ClassLoader
  */
+if ($_GET['autoload'] == 'bootstrap') {include __DIR__ .'/../src/Comemoov/CoreBundle/Model/BookingListingManager.php';};
 $loader = require __DIR__ . '/../app/autoload.php';
 include_once __DIR__ . '/../app/bootstrap.php.cache';
 
