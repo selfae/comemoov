@@ -98,7 +98,7 @@ class ListingController extends Controller
      *      "slug" = "[a-z0-9-]+$"
      * })
      * @Method("GET")
-     * @Security("is_granted('view', listing)")
+     * @Security("is_granted('view', listing) or has_role('ROLE_COACH')")
      * @ParamConverter("listing", class="Cocorico\CoreBundle\Entity\Listing", options={"repository_method" = "findOneBySlug"})
      *
      * @param Request $request
