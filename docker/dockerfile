@@ -1,4 +1,4 @@
-# 	docker run --name caher_comemove -v /home/selfae/workspace/comemove:/var/www/html/cocorico/:rw -v /home/selfae/workspace/comemove/db/mysql/cocorico_dev/:/var/lib/mysql/cocorico_dev:rw -v /home/selfae/workspace/comemove/db/mongodb/:/var/lib/mongodb:rw -p 8080:80 -p 443:443 -it caher_comemove
+# 	docker run --name caher_comemove -v /home/selfae/workspace/comemoov:/var/www/html/cocorico/:rw -v /home/selfae/workspace/comemoov/db/mysql/:/var/lib/mysql/:rw -v /home/selfae/workspace/comemoov/db/mongodb/:/var/lib/mongodb:rw -p 8080:80 -p 443:443 -it caher_comemove
 
 
 FROM debian:jessie

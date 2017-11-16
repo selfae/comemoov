@@ -1,0 +1,70 @@
+{% extends '::base.html.twig' %}
+
+{%- block meta_title -%}
+    {{ 'home.meta_title'|trans({}, 'cocorico_meta') ~ " - " ~ cocorico_site_name }}
+{%- endblock -%}
+
+{%- block meta_description -%}
+    {{ 'home.meta_desc'|trans({}, 'cocorico_meta') }}
+{%- endblock -%}
+
+{% block theme %}home-page{% endblock %}
+
+{% block layout %}
+    {% embed '@CocoricoCore/Frontend/layout.html.twig' %}
+
+        {% trans_default_domain 'cocorico_home' %}
+
+        {% block search_form %}
+            {{ render(controller('CocoricoCoreBundle:Frontend/ListingSearch:searchHomeForm')) }}
+        {% endblock %}
+
+        {% block main %}
+            {{ page.description | raw }}
+
+            {% include 'CocoricoCoreBundle:Frontend/Home:high_rank.html.twig'  with {
+            'listings': listings
+            } only %}
+
+        {% endblock %}
+        {% block modal %}
+            {% include 'CocoricoCoreBundle:Frontend/Common:_modal.html.twig' only %}
+        {% endblock %}
+    {% endembed %}
+{% endblock %}
+
+
+{% block javascripts %}
+    {{ parent() }}
+
+    {#Geocoding #}
+    {% include '@CocoricoCore/Frontend/ListingResult/js/_geocoding_js.html.twig' with {
+    'map_elt': '',
+    'auto_complete_elt': '#location'
+    } only %}
+
+    <script>
+        // Categories
+        $(function () {
+
+            // Set default favourites in the listing
+            setDefaultFavourites();
+
+            initMultiSelect(
+                    '#categories',
+                    '{{ "multiselect.all_selected"|trans({}, "cocorico") }}',
+                    '{{ "multiselect.none_selected"|trans({}, "cocorico") }}',
+                    '{{ "multiselect.num_selected"|trans({}, "cocorico") }}',
+                    '250px'
+            );
+        });
+    </script>
+{% endblock %}
+
+{% block markup_jsonld %}
+    {{ parent() }}
+
+    {% include '@CocoricoSeo/Frontend/Home/_index_markup.jsonld.twig' ignore missing with {
+    'listings': listings
+    } only %}
+{% endblock %}
